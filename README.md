@@ -33,8 +33,8 @@ To run these simulations, you will need Python 3 and the libraries listed in `re
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/your-repository-name.git
-    cd your-repository-name
+    git clone https://github.com/fengchaoya/inbreeding-depression-simulation.git
+    cd inbreeding-depression-simulation
     ```
 
 2.  **Create and activate a virtual environment:**
