@@ -83,7 +83,7 @@ if __name__ == '__main__':
         print(f"Target parameter: {analysis_param_name}")
 
         BASE_PARAMS = {
-            "population_size": 10000, "num_generations": 25, "initial_A_proportion": 0.5,
+            "population_size": 100000, "num_generations": 25, "initial_A_proportion": 0.5,
             "h": 0.8, "Delta": 0.3, "pi": 0.3, "gamma": 0.8
         }
         ai_values_to_scan = np.linspace(0.5, 1, 51)
