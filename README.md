@@ -2,11 +2,17 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repository contains a suite of Python scripts for simulating and analyzing strategies for genetic intervention in a crop/livestock population. The core of the project is to model the trade-offs in selective breeding and explore the relationship between genetic makeup and overall yield, particularly in the context of inbreeding depression or other genetic-diversity-related costs.
+This repository contains a suite of Python scripts for simulating and analyzing strategies for genetic intervention in a crop/livlivestock population. The core of the project is to model the trade-offs in selective breeding and explore the relationship between genetic makeup and overall yield, particularly in the context of inbreeding depression or other genetic-diversity-related costs.
 
-The project compares two main regulatory models:
+For a detailed breakdown of the computational methods and algorithms, please see the **[Simulation Strategy and Numerical Methods](docs/Algorithms.md)** document, which serves as an online appendix.
+
+The project compares three regulatory models:
 1.  **The Myopic Regulator:** A decision-maker who optimizes breeding strategies to maximize the expected yield of the *very next generation*, without considering long-term consequences.
 2.  **The Forward-Looking Regulator:** A rational agent who uses dynamic programming to find an optimal policy that maximizes the total discounted stream of future yields over an infinite horizon.
+3.  **The Robust Regulation Strategy:** A pragmatic regulator who commits to a single, constant policy over a fixed number of generations, aiming to maximize the average yield across that entire period.
+
+## Documentation
+Formal algorithms (myopic engine and VFI), grids, tolerances, and convergence criteria are described in **docs/Algorithms.md**.
 
 ## Project Structure
 
