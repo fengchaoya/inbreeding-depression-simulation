@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
         # Base parameters (disease-effect model: pi and gamma)
         BASE_PARAMS = {
-            "population_size": 10000,
+            "population_size": 100000,
             "num_generations": 10,
             "initial_A_proportion": 0.5,
             "h": 0.8,
@@ -63,7 +63,7 @@ if __name__ == '__main__':
             "pi": 0.3,
             "gamma": 0.8,
         }
-        ai_values_to_scan = np.linspace(0.5, 1, 51)
+        ai_values_to_scan = np.linspace(0.5, 1, 501)
 
         static_params_for_run = BASE_PARAMS.copy()
         if analysis_param_name in static_params_for_run:

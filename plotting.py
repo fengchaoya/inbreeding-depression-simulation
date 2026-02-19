@@ -25,11 +25,11 @@ def create_plots(results, output_dir):
     avg_yields_mesh = results["avg_yields_mesh"]
 
     xlabel_map = {
-        'h': 'Dominance Coefficient (h)',
-        'Delta': 'Selection Coefficient (Δ)',
-        'pi': 'Disease Incidence (π)',
-        'gamma': 'Disease Severity (γ)',
-        'num_generations': 'Number of Generations',
+        'h': 'h',
+        'Delta': 'Δ',
+        'pi': 'π',
+        'gamma': 'γ',
+        'num_generations': 'Policy Duration (Generations)',
         'initial_A_proportion': r'$p_0$'
     }
     Y_label = xlabel_map.get(sweep_param_name, sweep_param_name)
@@ -54,7 +54,7 @@ def create_plots(results, output_dir):
     plt.xlabel(Y_label, fontsize=18)
     plt.ylabel('Optimal a', fontsize=18)
     plt.title(f'Optimal a vs. {Y_label}', fontsize=22)
-    plt.ylim([min(ai_values), max(ai_values)])
+    plt.ylim(0,1)
     plt.tick_params(axis='both', labelsize=15)
     plt.grid(True)
     plt.tight_layout()
@@ -62,7 +62,7 @@ def create_plots(results, output_dir):
 
     # Plot 3: 3D Surface
     X_MESH, Y_MESH = np.meshgrid(ai_values, sweep_param_values)
-    fig = plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(8, 6))
     ax = fig.add_subplot(111, projection='3d')
     surf = ax.plot_surface(X_MESH, Y_MESH, avg_yields_mesh, cmap='viridis', edgecolor='none')
     ax.set_xlabel('a', fontsize=16, labelpad=10)
@@ -70,14 +70,18 @@ def create_plots(results, output_dir):
     ax.set_zlabel('Average Yield', fontsize=16, labelpad=10)
     ax.set_title(f'Average Yield vs. a and {Y_label}', fontsize=22, pad=20)
     ax.tick_params(axis='both', labelsize=13)
-    fig.colorbar(surf, shrink=0.5, aspect=5, label='Average Yield')
+    # cbar = fig.colorbar(surf, shrink=0.5, aspect=5)
+    # cbar.set_label('Average Yield', fontsize=18)
+    # cbar.ax.tick_params(labelsize=13)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f"yield_surface_vs_{sweep_param_name}.png"), dpi=300)
 
     # Plot 4: Contour
-    plt.figure(figsize=(9, 7))
+    plt.figure(figsize=(8, 6))
     contour = plt.contourf(X_MESH, Y_MESH, avg_yields_mesh, levels=20, cmap='viridis')
-    plt.colorbar(contour, label='Average Yield')
+    cbar = plt.colorbar(contour)
+    cbar.set_label('Average Yield', fontsize=18)
+    cbar.ax.tick_params(labelsize=15)
     plt.xlabel('a', fontsize=18)
     plt.ylabel(Y_label, fontsize=18)
     plt.title(f'Contour Plot: Yield vs. a and {Y_label}', fontsize=22)
@@ -234,15 +238,11 @@ def plot_dp_results(optimizer, p0_list=[0.2, 0.5, 0.8], output_dir=None):
     Plot DP model four-panel results figure.
     """
     fig, axes = plt.subplots(2, 2, figsize=(14, 13))
-    fig.suptitle(
-        f'Parameters: h={optimizer.h}, Δ={optimizer.Delta}, '
-        f'β={optimizer.beta}, cost_type={optimizer.cost_type}',
-        fontsize=22, fontweight='bold'
-    )
 
     # 1. Value Function
     axes[0, 0].plot(optimizer.p_grid, optimizer.V, 'b-', linewidth=2)
-    axes[0, 0].set_xlabel('p (Proportion of Allele A)', fontsize=16)
+    axes[0, 0].set_ylim( 0, 25)
+    axes[0, 0].set_xlabel('p ', fontsize=16)
     axes[0, 0].set_ylabel('V(p)', fontsize=16)
     axes[0, 0].set_title('Value Function', fontsize=18)
     axes[0, 0].tick_params(axis='both', labelsize=13)
@@ -253,8 +253,8 @@ def plot_dp_results(optimizer, p0_list=[0.2, 0.5, 0.8], output_dir=None):
     axes[0, 1].plot([0, 1], [0, 1], 'k--', linewidth=1, label='y=x')
     axes[0, 1].set_xlim(0, 1)
     axes[0, 1].set_ylim(0, 1)
-    axes[0, 1].set_xlabel('p (Proportion of Allele A)', fontsize=16)
-    axes[0, 1].set_ylabel('a (Optimal Policy)', fontsize=16)
+    axes[0, 1].set_xlabel('p', fontsize=16)
+    axes[0, 1].set_ylabel('Optimal a', fontsize=16)
     axes[0, 1].set_title('Optimal Policy Function', fontsize=18)
     axes[0, 1].legend(fontsize=14)
     axes[0, 1].tick_params(axis='both', labelsize=13)
@@ -267,9 +267,9 @@ def plot_dp_results(optimizer, p0_list=[0.2, 0.5, 0.8], output_dir=None):
         axes[1, 0].plot(p_traj, color=colors[i], linewidth=2,
                         label=f'Initial p={p0}', marker='o', markersize=3)
     axes[1, 0].set_ylim(0, 1)
-    axes[1, 0].set_xlabel('Time', fontsize=16)
-    axes[1, 0].set_ylabel(r'$p_t$ (Proportion of Allele A)', fontsize=16)
-    axes[1, 0].set_title('Dynamics of p', fontsize=18)
+    axes[1, 0].set_xlabel('Generation', fontsize=16)
+    axes[1, 0].set_ylabel(r'$p_t$', fontsize=16)
+    axes[1, 0].set_title('Dynamic trajectory of p', fontsize=18)
     axes[1, 0].legend(fontsize=14)
     axes[1, 0].tick_params(axis='both', labelsize=13)
     axes[1, 0].grid(True)
@@ -280,20 +280,21 @@ def plot_dp_results(optimizer, p0_list=[0.2, 0.5, 0.8], output_dir=None):
         axes[1, 1].plot(a_traj, color=colors[i], linewidth=2,
                         label=f'Initial p={p0}', marker='s', markersize=3)
     axes[1, 1].set_ylim(0, 1)
-    axes[1, 1].set_xlabel('Time', fontsize=16)
-    axes[1, 1].set_ylabel(r'$a_t$ (Proportion of Allele A in AI)', fontsize=16)
-    axes[1, 1].set_title('Dynamics of a', fontsize=18)
+    axes[1, 1].set_xlabel('Generation', fontsize=16)
+    axes[1, 1].set_ylabel(r'$a_t$', fontsize=16)
+    axes[1, 1].set_title('Dynamics trajectory of a', fontsize=18)
     axes[1, 1].legend(fontsize=14)
     axes[1, 1].tick_params(axis='both', labelsize=13)
     axes[1, 1].grid(True)
 
-    plt.tight_layout()
+    plt.tight_layout(h_pad=3.0, w_pad=2.0)
 
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
         plt.savefig(os.path.join(output_dir, "dp_results.png"), dpi=300)
 
     plt.show()
+
 
 
 def plot_bellman_objective(optimizer, p_values_to_plot=[0.2, 0.5, 0.8],
